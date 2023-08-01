@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import { useReducer } from "react";
 import Button from "../components/Button";
 import Panel from "../components/Panel";
@@ -7,26 +8,18 @@ const constants = require("./CounterPageConst");
 const reducer = (state, action) => {
     switch (action.type) {
         case constants.INCREMENT_COUNT:
-            return {
-                ...state,
-                count: state.count + 1
-            }
+            state.count = state.count + 1;
+            return;
         case constants.DECREMENT_COUNT:
-            return {
-                ...state,
-                count: state.count - 1
-            }
+            state.count = state.count - 1;
+            return;
         case constants.CHANGE_VALUE_TO_ADD:
-            return {
-                ...state,
-                valueToAdd: action.payload
-            }
+            state.valueToAdd = action.payload;
+            return;
         case constants.ADD_VALUE_TO_COUNT:
-            return {
-                ...state,
-                count: state.count + state.valueToAdd,
-                valueToAdd: 0
-            }
+            state.count = state.count + state.valueToAdd;
+            state.valueToAdd = 0;
+            return;
         default:
             throw new Error(`unexpected action type: ${action.type}`);
     }
@@ -34,7 +27,7 @@ const reducer = (state, action) => {
 
 function CounterPage({ initialCount }) {
     //useReducer
-    const [state, dispatch] = useReducer(reducer, {
+    const [state, dispatch] = useReducer(produce(reducer), {
         count: initialCount,
         valueToAdd: 0
     });
